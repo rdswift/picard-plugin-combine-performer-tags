@@ -1,0 +1,15 @@
+uuid = "4779bcaf-1bda-4580-8c55-1fbe28771ce8"
+name = "Combine Performer Tags"
+authors = ["Bob Swift"]
+version = "0.8"
+description = """
+This plugin combines all performer tags into a multi-value variable `%_performers%`.
+The format of the resulting variable items can be customized in the option settings page.
+"""
+api = ['3.0']
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+This plugin combines all performer tags into a multi-value variable `%_performers%`.
+The format of the resulting variable items can be customized in the option settings page.
+"""
