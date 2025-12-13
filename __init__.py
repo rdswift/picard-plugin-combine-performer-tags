@@ -26,7 +26,6 @@ from collections import namedtuple
 
 from PyQt6 import QtWidgets
 
-from picard import options
 from picard.plugin3.api import (
     OptionsPage,
     PluginApi,
@@ -34,9 +33,6 @@ from picard.plugin3.api import (
 
 from .ui_options_combine_performer_tags import \
     Ui_CombinePerformerTagsOptionsPage
-
-
-LOG_PREFIX = 'Combine Performer Tags'
 
 
 class PluginOptions():
@@ -48,33 +44,33 @@ class PluginOptions():
     # pylint: disable=invalid-name
 
     def __init__(self, api: PluginApi = None) -> None:
-        self.OPT_CREDITED_ARTIST = 'cpt_cred_artist'
-        self.OPT_CREDITED_INSTRUMENT = 'cpt_cred_instrument'
-        self.OPT_CREDITED_VOCAL = 'cpt_cred_vocal'
-        self.OPT_INSTRUMENT_ATTR_ADDITIONAL = 'cpt_inst_attr_additional'
-        self.OPT_INSTRUMENT_ATTR_GUEST = 'cpt_inst_attr_guest'
-        self.OPT_INSTRUMENT_ATTR_SOLO = 'cpt_inst_attr_solo'
-        self.OPT_VOCAL_ATTR_ADDITIONAL = 'cpt_vocal_attr_additional'
-        self.OPT_VOCAL_ATTR_GUEST = 'cpt_vocal_attr_guest'
-        self.OPT_VOCAL_ATTR_SOLO = 'cpt_vocal_attr_solo'
-        self.OPT_VOCAL_ATTR_TYPES = 'cpt_vocal_attr_types'
-        self.OPT_TAG_GROUP_BY_ARTIST = 'cpt_group_by_artist'
-        self.OPT_FORMAT_GROUP_ADDITIONAL = 'cpt_format_group_additional'
-        self.OPT_FORMAT_GROUP_GUEST = 'cpt_format_group_guest'
-        self.OPT_FORMAT_GROUP_SOLO = 'cpt_format_group_solo'
-        self.OPT_FORMAT_GROUP_VOCALS = 'cpt_format_group_vocals'
-        self.OPT_FORMAT_GROUP_1_START = 'cpt_format_group_1_start_char'
-        self.OPT_FORMAT_GROUP_1_END = 'cpt_format_group_1_end_char'
-        self.OPT_FORMAT_GROUP_1_SEP = 'cpt_format_group_1_sep_char'
-        self.OPT_FORMAT_GROUP_2_START = 'cpt_format_group_2_start_char'
-        self.OPT_FORMAT_GROUP_2_END = 'cpt_format_group_2_end_char'
-        self.OPT_FORMAT_GROUP_2_SEP = 'cpt_format_group_2_sep_char'
-        self.OPT_FORMAT_GROUP_3_START = 'cpt_format_group_3_start_char'
-        self.OPT_FORMAT_GROUP_3_END = 'cpt_format_group_3_end_char'
-        self.OPT_FORMAT_GROUP_3_SEP = 'cpt_format_group_3_sep_char'
-        self.OPT_FORMAT_GROUP_4_START = 'cpt_format_group_4_start_char'
-        self.OPT_FORMAT_GROUP_4_END = 'cpt_format_group_4_end_char'
-        self.OPT_FORMAT_GROUP_4_SEP = 'cpt_format_group_4_sep_char'
+        self.OPT_CREDITED_ARTIST = 'cred_artist'
+        self.OPT_CREDITED_INSTRUMENT = 'cred_instrument'
+        self.OPT_CREDITED_VOCAL = 'cred_vocal'
+        self.OPT_INSTRUMENT_ATTR_ADDITIONAL = 'inst_attr_additional'
+        self.OPT_INSTRUMENT_ATTR_GUEST = 'inst_attr_guest'
+        self.OPT_INSTRUMENT_ATTR_SOLO = 'inst_attr_solo'
+        self.OPT_VOCAL_ATTR_ADDITIONAL = 'vocal_attr_additional'
+        self.OPT_VOCAL_ATTR_GUEST = 'vocal_attr_guest'
+        self.OPT_VOCAL_ATTR_SOLO = 'vocal_attr_solo'
+        self.OPT_VOCAL_ATTR_TYPES = 'vocal_attr_types'
+        self.OPT_TAG_GROUP_BY_ARTIST = 'group_by_artist'
+        self.OPT_FORMAT_GROUP_ADDITIONAL = 'format_group_additional'
+        self.OPT_FORMAT_GROUP_GUEST = 'format_group_guest'
+        self.OPT_FORMAT_GROUP_SOLO = 'format_group_solo'
+        self.OPT_FORMAT_GROUP_VOCALS = 'format_group_vocals'
+        self.OPT_FORMAT_GROUP_1_START = 'format_group_1_start_char'
+        self.OPT_FORMAT_GROUP_1_END = 'format_group_1_end_char'
+        self.OPT_FORMAT_GROUP_1_SEP = 'format_group_1_sep_char'
+        self.OPT_FORMAT_GROUP_2_START = 'format_group_2_start_char'
+        self.OPT_FORMAT_GROUP_2_END = 'format_group_2_end_char'
+        self.OPT_FORMAT_GROUP_2_SEP = 'format_group_2_sep_char'
+        self.OPT_FORMAT_GROUP_3_START = 'format_group_3_start_char'
+        self.OPT_FORMAT_GROUP_3_END = 'format_group_3_end_char'
+        self.OPT_FORMAT_GROUP_3_SEP = 'format_group_3_sep_char'
+        self.OPT_FORMAT_GROUP_4_START = 'format_group_4_start_char'
+        self.OPT_FORMAT_GROUP_4_END = 'format_group_4_end_char'
+        self.OPT_FORMAT_GROUP_4_SEP = 'format_group_4_sep_char'
 
         self.api = api
 
@@ -84,7 +80,7 @@ class PluginOptions():
         temp = PluginOptions(self.api)  # Get unintialized list to provide Picard option settings keys
         for option in [x for x in temp.__dict__ if x.startswith('OPT_')]:
             key = getattr(temp, option)
-            self.__dict__[option] = self.api.global_config.setting[key]
+            self.__dict__[option] = self.api.plugin_config[key]
 
 
 class CombinePerformerTags():
@@ -98,7 +94,8 @@ class CombinePerformerTags():
         Args:
             source_metadata (dict): Metadata to process.
             options (PluginOptions, optional): Options to use for processing.  If not provided,
-            the current settings from Picard's option settings are used.
+                the current settings from Picard's option settings are used.
+            api (PluginApi, optional): The plugin's api.  Defaults to None.
         """
         self.performance_dict = {}
         self.source = source_metadata
@@ -298,10 +295,10 @@ def combine_performer_tags(api: PluginApi, _album, album_metadata, track_metadat
     """
 
     def metadata_error(album_id: str, metadata_element: str, track_number: str) -> None:
-        api.logger.error(f"{LOG_PREFIX}: {album_id}: Missing '{metadata_element}' in track {track_number} metadata.")
+        api.logger.error(f"{album_id}: Missing '{metadata_element}' in track {track_number} metadata.")
 
-    if not api.global_config.setting['track_ars']:
-        api.logger.error(f"{LOG_PREFIX}: Use track relationships is not enabled in Options -> Metadata.")
+    if not api.plugin_config['track_ars']:
+        api.logger.error("Use track relationships is not enabled in Options -> Metadata.")
         return
 
     album_id = release_metadata['id'] if release_metadata else 'No Album ID'
@@ -329,41 +326,40 @@ class CombinePerformerTagsOptionsPage(OptionsPage):
 
     keys = PluginOptions()  # Get unintialized list to provide Picard option settings keys
 
-    options = [
-        options.BoolOption('setting', keys.OPT_CREDITED_ARTIST, True),
-        options.BoolOption('setting', keys.OPT_CREDITED_INSTRUMENT, True),
-        options.BoolOption('setting', keys.OPT_CREDITED_VOCAL, True),
-        options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_ADDITIONAL, True),
-        options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_GUEST, True),
-        options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_SOLO, True),
-        options.BoolOption('setting', keys.OPT_VOCAL_ATTR_ADDITIONAL, True),
-        options.BoolOption('setting', keys.OPT_VOCAL_ATTR_GUEST, True),
-        options.BoolOption('setting', keys.OPT_VOCAL_ATTR_SOLO, True),
-        options.BoolOption('setting', keys.OPT_VOCAL_ATTR_TYPES, True),
+    # options = [
+    #     options.BoolOption('setting', keys.OPT_CREDITED_ARTIST, True),
+    #     options.BoolOption('setting', keys.OPT_CREDITED_INSTRUMENT, True),
+    #     options.BoolOption('setting', keys.OPT_CREDITED_VOCAL, True),
+    #     options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_ADDITIONAL, True),
+    #     options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_GUEST, True),
+    #     options.BoolOption('setting', keys.OPT_INSTRUMENT_ATTR_SOLO, True),
+    #     options.BoolOption('setting', keys.OPT_VOCAL_ATTR_ADDITIONAL, True),
+    #     options.BoolOption('setting', keys.OPT_VOCAL_ATTR_GUEST, True),
+    #     options.BoolOption('setting', keys.OPT_VOCAL_ATTR_SOLO, True),
+    #     options.BoolOption('setting', keys.OPT_VOCAL_ATTR_TYPES, True),
 
-        options.BoolOption('setting', keys.OPT_TAG_GROUP_BY_ARTIST, True),
+    #     options.BoolOption('setting', keys.OPT_TAG_GROUP_BY_ARTIST, True),
 
-        options.IntOption('setting', keys.OPT_FORMAT_GROUP_ADDITIONAL, 3),
-        options.IntOption('setting', keys.OPT_FORMAT_GROUP_GUEST, 4),
-        options.IntOption('setting', keys.OPT_FORMAT_GROUP_SOLO, 3),
-        options.IntOption('setting', keys.OPT_FORMAT_GROUP_VOCALS, 2),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_START, ''),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_END, ' '),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_SEP, ''),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_START, ', '),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_END, ''),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_SEP, ''),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_START, ' ('),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_END, ')'),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_SEP, ''),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_START, ' ('),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_END, ')'),
-        options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_SEP, ''),
-    ]
+    #     options.IntOption('setting', keys.OPT_FORMAT_GROUP_ADDITIONAL, 3),
+    #     options.IntOption('setting', keys.OPT_FORMAT_GROUP_GUEST, 4),
+    #     options.IntOption('setting', keys.OPT_FORMAT_GROUP_SOLO, 3),
+    #     options.IntOption('setting', keys.OPT_FORMAT_GROUP_VOCALS, 2),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_START, ''),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_END, ' '),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_1_SEP, ''),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_START, ', '),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_END, ''),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_2_SEP, ''),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_START, ' ('),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_END, ')'),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_3_SEP, ''),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_START, ' ('),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_END, ')'),
+    #     options.TextOption('setting', keys.OPT_FORMAT_GROUP_4_SEP, ''),
+    # ]
 
-    def __init__(self, api: PluginApi, parent=None) -> None:
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.api = api
         self.ui = Ui_CombinePerformerTagsOptionsPage()
         self.ui.setupUi(self)
 
@@ -374,7 +370,7 @@ class CombinePerformerTagsOptionsPage(OptionsPage):
         self.settings = PluginOptions(self.api)
         self.settings.load_from_config()
 
-        self.processor = CombinePerformerTags(ExampleMetadata.RELS, api=api)
+        self.processor = CombinePerformerTags(ExampleMetadata.RELS, api=self.api)
 
         self.ui.cb_credited_artists.clicked.connect(self._update_settings_and_examples)
         self.ui.cb_credited_instruments.clicked.connect(self._update_settings_and_examples)
@@ -429,23 +425,23 @@ class CombinePerformerTagsOptionsPage(OptionsPage):
         self.ui.format_group_4_end_char.editingFinished.connect(self._update_settings_and_examples)
 
     def _log_widget_error(self, error: Exception, widget: str) -> None:
-        self.api.logger.error(f"{LOG_PREFIX}: {error}: Unable to find widget '{widget}'.")
+        self.api.logger.error(f"{error}: Unable to find widget '{widget}'.")
 
     def load(self) -> None:
         """Load the option settings.
         """
-        self.ui.cb_credited_artists.setChecked(self.api.global_config.setting[self.keys.OPT_CREDITED_ARTIST])
-        self.ui.cb_credited_instruments.setChecked(self.api.global_config.setting[self.keys.OPT_CREDITED_INSTRUMENT])
-        self.ui.cb_credited_vocals.setChecked(self.api.global_config.setting[self.keys.OPT_CREDITED_VOCAL])
-        self.ui.cb_additional_instruments.setChecked(self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_ADDITIONAL])
-        self.ui.cb_guest_instruments.setChecked(self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_GUEST])
-        self.ui.cb_solo_instruments.setChecked(self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_SOLO])
-        self.ui.cb_additional_vocals.setChecked(self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_ADDITIONAL])
-        self.ui.cb_guest_vocals.setChecked(self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_GUEST])
-        self.ui.cb_solo_vocals.setChecked(self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_SOLO])
-        self.ui.cb_vocal_types.setChecked(self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_TYPES])
+        self.ui.cb_credited_artists.setChecked(self.api.plugin_config[self.keys.OPT_CREDITED_ARTIST])
+        self.ui.cb_credited_instruments.setChecked(self.api.plugin_config[self.keys.OPT_CREDITED_INSTRUMENT])
+        self.ui.cb_credited_vocals.setChecked(self.api.plugin_config[self.keys.OPT_CREDITED_VOCAL])
+        self.ui.cb_additional_instruments.setChecked(self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_ADDITIONAL])
+        self.ui.cb_guest_instruments.setChecked(self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_GUEST])
+        self.ui.cb_solo_instruments.setChecked(self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_SOLO])
+        self.ui.cb_additional_vocals.setChecked(self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_ADDITIONAL])
+        self.ui.cb_guest_vocals.setChecked(self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_GUEST])
+        self.ui.cb_solo_vocals.setChecked(self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_SOLO])
+        self.ui.cb_vocal_types.setChecked(self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_TYPES])
 
-        if self.api.global_config.setting[self.keys.OPT_TAG_GROUP_BY_ARTIST]:
+        if self.api.plugin_config[self.keys.OPT_TAG_GROUP_BY_ARTIST]:
             self.ui.rb_group_artist.setChecked(True)
         else:
             self.ui.rb_group_instrument.setChecked(True)
@@ -464,30 +460,30 @@ class CombinePerformerTagsOptionsPage(OptionsPage):
                 self._log_widget_error(e, widget)
 
         # Settings for keywords
-        _set_rb('additional_rb', self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_ADDITIONAL])
-        _set_rb('guest_rb', self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_GUEST])
-        _set_rb('solo_rb', self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_SOLO])
-        _set_rb('vocals_rb', self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_VOCALS])
+        _set_rb('additional_rb', self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_ADDITIONAL])
+        _set_rb('guest_rb', self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_GUEST])
+        _set_rb('solo_rb', self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_SOLO])
+        _set_rb('vocals_rb', self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_VOCALS])
 
         # Settings for word group 1
-        self.ui.format_group_1_start_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_START])
-        self.ui.format_group_1_end_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_END])
-        self.ui.format_group_1_sep_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_SEP])
+        self.ui.format_group_1_start_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_START])
+        self.ui.format_group_1_end_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_END])
+        self.ui.format_group_1_sep_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_SEP])
 
         # Settings for word group 2
-        self.ui.format_group_2_start_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_START])
-        self.ui.format_group_2_end_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_END])
-        self.ui.format_group_2_sep_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_SEP])
+        self.ui.format_group_2_start_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_START])
+        self.ui.format_group_2_end_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_END])
+        self.ui.format_group_2_sep_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_SEP])
 
         # Settings for word group 3
-        self.ui.format_group_3_start_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_START])
-        self.ui.format_group_3_end_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_END])
-        self.ui.format_group_3_sep_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_SEP])
+        self.ui.format_group_3_start_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_START])
+        self.ui.format_group_3_end_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_END])
+        self.ui.format_group_3_sep_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_SEP])
 
         # Settings for word group 4
-        self.ui.format_group_4_start_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_START])
-        self.ui.format_group_4_end_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_END])
-        self.ui.format_group_4_sep_char.setText(self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_SEP])
+        self.ui.format_group_4_start_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_START])
+        self.ui.format_group_4_end_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_END])
+        self.ui.format_group_4_sep_char.setText(self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_SEP])
 
         self.update_examples()
 
@@ -513,43 +509,43 @@ class CombinePerformerTagsOptionsPage(OptionsPage):
     def save(self) -> None:
         """Save the option settings.
         """
-        self.api.global_config.setting[self.keys.OPT_CREDITED_ARTIST] = self.ui.cb_credited_artists.isChecked()
-        self.api.global_config.setting[self.keys.OPT_CREDITED_INSTRUMENT] = self.ui.cb_credited_instruments.isChecked()
-        self.api.global_config.setting[self.keys.OPT_CREDITED_VOCAL] = self.ui.cb_credited_vocals.isChecked()
-        self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_ADDITIONAL] = self.ui.cb_additional_instruments.isChecked()
-        self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_GUEST] = self.ui.cb_guest_instruments.isChecked()
-        self.api.global_config.setting[self.keys.OPT_INSTRUMENT_ATTR_SOLO] = self.ui.cb_solo_instruments.isChecked()
-        self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_ADDITIONAL] = self.ui.cb_additional_vocals.isChecked()
-        self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_GUEST] = self.ui.cb_guest_vocals.isChecked()
-        self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_SOLO] = self.ui.cb_solo_vocals.isChecked()
-        self.api.global_config.setting[self.keys.OPT_VOCAL_ATTR_TYPES] = self.ui.cb_vocal_types.isChecked()
-        self.api.global_config.setting[self.keys.OPT_TAG_GROUP_BY_ARTIST] = self.ui.rb_group_artist.isChecked()
+        self.api.plugin_config[self.keys.OPT_CREDITED_ARTIST] = self.ui.cb_credited_artists.isChecked()
+        self.api.plugin_config[self.keys.OPT_CREDITED_INSTRUMENT] = self.ui.cb_credited_instruments.isChecked()
+        self.api.plugin_config[self.keys.OPT_CREDITED_VOCAL] = self.ui.cb_credited_vocals.isChecked()
+        self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_ADDITIONAL] = self.ui.cb_additional_instruments.isChecked()
+        self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_GUEST] = self.ui.cb_guest_instruments.isChecked()
+        self.api.plugin_config[self.keys.OPT_INSTRUMENT_ATTR_SOLO] = self.ui.cb_solo_instruments.isChecked()
+        self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_ADDITIONAL] = self.ui.cb_additional_vocals.isChecked()
+        self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_GUEST] = self.ui.cb_guest_vocals.isChecked()
+        self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_SOLO] = self.ui.cb_solo_vocals.isChecked()
+        self.api.plugin_config[self.keys.OPT_VOCAL_ATTR_TYPES] = self.ui.cb_vocal_types.isChecked()
+        self.api.plugin_config[self.keys.OPT_TAG_GROUP_BY_ARTIST] = self.ui.rb_group_artist.isChecked()
 
         # Settings for word group 1
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_START] = self.ui.format_group_1_start_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_END] = self.ui.format_group_1_end_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_1_SEP] = self.ui.format_group_1_sep_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_START] = self.ui.format_group_1_start_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_END] = self.ui.format_group_1_end_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_1_SEP] = self.ui.format_group_1_sep_char.text()
 
         # Settings for word group 2
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_START] = self.ui.format_group_2_start_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_END] = self.ui.format_group_2_end_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_2_SEP] = self.ui.format_group_2_sep_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_START] = self.ui.format_group_2_start_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_END] = self.ui.format_group_2_end_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_2_SEP] = self.ui.format_group_2_sep_char.text()
 
         # Settings for word group 3
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_START] = self.ui.format_group_3_start_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_END] = self.ui.format_group_3_end_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_3_SEP] = self.ui.format_group_3_sep_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_START] = self.ui.format_group_3_start_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_END] = self.ui.format_group_3_end_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_3_SEP] = self.ui.format_group_3_sep_char.text()
 
         # Settings for word group 4
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_START] = self.ui.format_group_4_start_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_END] = self.ui.format_group_4_end_char.text()
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_4_SEP] = self.ui.format_group_4_sep_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_START] = self.ui.format_group_4_start_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_END] = self.ui.format_group_4_end_char.text()
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_4_SEP] = self.ui.format_group_4_sep_char.text()
 
         # Settings for keywords
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_ADDITIONAL] = self._get_rb('additional_rb', 4)
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_GUEST] = self._get_rb('guest_rb', 4)
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_SOLO] = self._get_rb('solo_rb', 4)
-        self.api.global_config.setting[self.keys.OPT_FORMAT_GROUP_VOCALS] = self._get_rb('vocals_rb', 4)
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_ADDITIONAL] = self._get_rb('additional_rb', 4)
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_GUEST] = self._get_rb('guest_rb', 4)
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_SOLO] = self._get_rb('solo_rb', 4)
+        self.api.plugin_config[self.keys.OPT_FORMAT_GROUP_VOCALS] = self._get_rb('vocals_rb', 4)
 
     def save_to_example_settings(self) -> None:
         """Save the option settings used for the examples.
@@ -878,5 +874,41 @@ class ExampleMetadata():
 
 def enable(api: PluginApi) -> None:
     """Called when plugin is enabled."""
+    keys = PluginOptions()  # Get unintialized list to provide Picard option settings keys
+
+    # Register option settings
+    api.plugin_config.register_option(keys.OPT_CREDITED_ARTIST, True)
+    api.plugin_config.register_option(keys.OPT_CREDITED_INSTRUMENT, True)
+    api.plugin_config.register_option(keys.OPT_CREDITED_VOCAL, True)
+    api.plugin_config.register_option(keys.OPT_INSTRUMENT_ATTR_ADDITIONAL, True)
+    api.plugin_config.register_option(keys.OPT_INSTRUMENT_ATTR_GUEST, True)
+    api.plugin_config.register_option(keys.OPT_INSTRUMENT_ATTR_SOLO, True)
+    api.plugin_config.register_option(keys.OPT_VOCAL_ATTR_ADDITIONAL, True)
+    api.plugin_config.register_option(keys.OPT_VOCAL_ATTR_GUEST, True)
+    api.plugin_config.register_option(keys.OPT_VOCAL_ATTR_SOLO, True)
+    api.plugin_config.register_option(keys.OPT_VOCAL_ATTR_TYPES, True)
+
+    api.plugin_config.register_option(keys.OPT_TAG_GROUP_BY_ARTIST, True)
+
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_ADDITIONAL, 3)
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_GUEST, 4)
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_SOLO, 3)
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_VOCALS, 2)
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_1_START, '')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_1_END, ' ')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_1_SEP, '')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_2_START, ', ')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_2_END, '')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_2_SEP, '')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_3_START, ' (')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_3_END, ')')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_3_SEP, '')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_4_START, ' (')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_4_END, ')')
+    api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_4_SEP, '')
+
+    # Register processor
     api.register_track_metadata_processor(combine_performer_tags)
+
+    # Register options page
     api.register_options_page(CombinePerformerTagsOptionsPage)
