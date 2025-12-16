@@ -62,3 +62,4 @@
 "ui.vocals_rb_2" = "2"
 "ui.vocals_rb_3" = "3"
 "ui.vocals_rb_4" = "4"
+"variable.performers" = "All instrument and vocal performer tags combined into a multi-value variable, with the format based on the settings page under \"Options...\" > \"Plugins\"."

@@ -1013,6 +1013,18 @@ def enable(api: PluginApi) -> None:
     api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_4_END, ')')
     api.plugin_config.register_option(keys.OPT_FORMAT_GROUP_4_SEP, '')
 
+    # Register script variable
+    api.register_script_variable(
+        name="_performers",
+        documentation=api.tr(
+            "variable.performers",
+            (
+                "All instrument and vocal performer tags combined into a multi-value variable, with the format based "
+                'on the settings page under "Options..." > "Plugins".'
+            )
+        )
+    )
+
     # Register processor
     api.register_track_metadata_processor(combine_performer_tags)
 
