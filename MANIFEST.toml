@@ -11,6 +11,7 @@ The format of the resulting variable items can be customized in the option setti
 """
 categories = ["metadata"]
 homepage = "https://picard-plugins-user-guides.readthedocs.io/en/latest/combine_performer_tags/user_guide.html"
+report_bugs_to = "https://github.com/rdswift/picard-plugin-combine-performer-tags/issues"
 
 
 [name_i18n]
