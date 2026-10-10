@@ -16,11 +16,13 @@ report_bugs_to = "https://github.com/rdswift/picard-plugin-combine-performer-tag
 
 [name_i18n]
 de = "Performer-Tags kombinieren"
-fr = "Combiner les balises Performer"
+fr = "Combiner les balises d'artiste"
+zh_CN = "合并表演者标签"
 
 [description_i18n]
 de = "Dieses Plugin fasst alle Performer-Tags in einer Mehrwertvariablen `%_performers%` zusammen."
-fr = "Ce plugin combine toutes les balises performer dans une variable à valeurs multiples `%_performers%`."
+fr = "Ce plugin regroupe toutes les balises d'interprète dans une variable à valeurs multiples `%_performers%`."
+zh_CN = "此插件将所有表演者标签合并到一个多值变量 `%_performers%` 中。"
 
 [long_description_i18n]
 de = """
@@ -28,7 +30,5 @@ Dieses Plugin fasst alle Performer-Tags in einer Mehrwertvariablen `%_performers
 Das Format der resultierenden variablen Elemente kann auf der Seite mit den Optionseinstellungen angepasst werden.
 """
 
-fr = """
-Ce plugin combine toutes les balises performer dans une variable à valeurs multiples `%_performers%`.
-Le format des éléments variables résultants peut être personnalisé dans la page des paramètres des options.
-"""
+fr = "Ce plugin regroupe toutes les balises d'interprète dans une variable à valeurs multiples `%_performers%`. Le format des éléments de la variable obtenue peut être personnalisé dans la page des paramètres."
+zh_CN = "此插件将所有表演者标签合并到一个多值变量 `%_performers%` 中。 结果变量的项格式可以在选项设置页面中自定义。"
